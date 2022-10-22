@@ -30,6 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1:8000', '127.0.0.1',]
 
+SITE_ID = 1
 
 # Application definition
 
@@ -40,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'rest_framework',
+    'djoser',
     'accounts',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
