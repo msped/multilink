@@ -1,4 +1,4 @@
-from re import L
+import json
 import shutil
 import tempfile
 
@@ -23,13 +23,12 @@ class TestAppConfig(APITestCase):
 class TestModels(APITestCase):
     
     def setUp(self):
-        profile = Profile.objects.create(
+        Profile.objects.create(
             first_name= 'Harold',
             last_name= 'Finch',
             username= 'admin',
             password=make_password('TestP455word!')
-        )
-        profile.save()
+        ).save()
 
     @classmethod
     def tearDownClass(cls):
@@ -60,3 +59,75 @@ class TestModels(APITestCase):
     def test_in_order(self):
         self.network_str()
         self.link_str()
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class TestViews(APITestCase):
+
+    def setUp(self):
+        Profile.objects.create(
+            first_name= 'Harold',
+            last_name= 'Finch',
+            username= 'admin',
+            password=make_password('TestP455word!1')
+        ).save()
+        Profile.objects.create(
+            first_name= 'John',
+            last_name= 'Reese',
+            username= 'test',
+            password=make_password('TestP455word!2')
+        ).save()
+        Networks.objects.create(
+            logo=SimpleUploadedFile('insta.png', b'insta'),
+            name="Instagram"
+        ).save()
+        Networks.objects.create(
+            logo=SimpleUploadedFile('twit.png', b'twit'),
+            name="Twitter"
+        ).save()
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
+
+    def create_link(self):
+        access_request = self.client.post(
+            '/api/auth/jwt/create/',
+            {
+                'username': 'admin',
+                'password': 'TestP455word!1'
+            },
+            format='json'
+        )
+        access_token = access_request.data['access']
+        network = Networks.objects.get(name="Twitter")
+        response = self.client.post(
+            '/api/links',
+            {
+                'network': network.id,
+                'link': 'https://twitter.com/'
+            },
+            **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "user": {
+                    "first_name": "Harold",
+                    "last_name": "Finch",
+                    "username": "admin",
+                    "profile_picture": None,
+                    "bio": None
+                },
+                "network": {
+                    "logo": "/media/logos/twit.png",
+                    "name": "Twitter"
+                },
+                "link": "https://twitter.com/",
+                "nsfw": False
+            }
+        )
+    
+    def test_in_order(self):
+        self.create_link()
