@@ -21,5 +21,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'username',
-            'profile_picture'
+            'profile_picture',
+            'bio'
         ]
