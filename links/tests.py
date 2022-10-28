@@ -5,7 +5,6 @@ import tempfile
 from django.contrib.auth.hashers import make_password
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
-from PIL import Image
 from rest_framework.test import APITestCase
 from accounts.models import Profile
 
