@@ -113,13 +113,6 @@ class TestViews(APITestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "user": {
-                    "first_name": "Harold",
-                    "last_name": "Finch",
-                    "username": "admin",
-                    "profile_picture": None,
-                    "bio": None
-                },
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
@@ -151,13 +144,6 @@ class TestViews(APITestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "user": {
-                    "first_name": "Harold",
-                    "last_name": "Finch",
-                    "username": "admin",
-                    "profile_picture": None,
-                    "bio": None
-                },
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
