@@ -102,7 +102,7 @@ class TestViews(APITestCase):
         access_token = access_request.data['access']
         network = Networks.objects.get(name="Twitter")
         response = self.client.post(
-            '/api/links',
+            '/api/links/',
             {
                 'network': network.id,
                 'link': 'https://twitter.com/'
@@ -128,6 +128,45 @@ class TestViews(APITestCase):
                 "nsfw": False
             }
         )
+
+    def update_link(self):
+        access_request = self.client.post(
+            '/api/auth/jwt/create/',
+            {
+                'username': 'admin',
+                'password': 'TestP455word!1'
+            },
+            format='json'
+        )
+        access_token = access_request.data['access']
+        link = Links.objects.get(network__name='Twitter')
+        response = self.client.patch(
+            f'/api/links/{link.id}',
+            {
+                'link': 'https://twitter.com/HWCCLiverpool'
+            },
+            **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "user": {
+                    "first_name": "Harold",
+                    "last_name": "Finch",
+                    "username": "admin",
+                    "profile_picture": None,
+                    "bio": None
+                },
+                "network": {
+                    "logo": "/media/logos/twit.png",
+                    "name": "Twitter"
+                },
+                "link": "https://twitter.com/HWCCLiverpool",
+                "nsfw": False
+            }
+        )
     
     def test_in_order(self):
         self.create_link()
+        self.update_link()
