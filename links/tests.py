@@ -141,7 +141,7 @@ class TestViews(APITestCase):
         access_token = access_request.data['access']
         link = Links.objects.get(network__name='Twitter')
         response = self.client.patch(
-            f'/api/links/{link.id}',
+            f'/api/links/{link.id}/',
             {
                 'link': 'https://twitter.com/HWCCLiverpool'
             },
@@ -178,7 +178,7 @@ class TestViews(APITestCase):
         )
         access_token = access_request.data['access']
         response = self.client.get(
-            '/api/links/networks',
+            '/api/links/networks/',
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 200)
@@ -208,7 +208,7 @@ class TestViews(APITestCase):
         access_token = access_request.data['access']
         link = Links.objects.get(network__name='Twitter')
         response = self.client.delete(
-            f'/api/links/{link.id}',
+            f'/api/links/{link.id}/',
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 204)
