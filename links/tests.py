@@ -166,7 +166,25 @@ class TestViews(APITestCase):
                 "nsfw": False
             }
         )
+
+    def delete_link(self):
+        access_request = self.client.post(
+            '/api/auth/jwt/create/',
+            {
+                'username': 'admin',
+                'password': 'TestP455word!1'
+            },
+            format='json'
+        )
+        access_token = access_request.data['access']
+        link = Links.objects.get(network__name='Twitter')
+        response = self.client.delete(
+            f'/api/links/{link.id}',
+            **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
+        )
+        self.assertEqual(response.status_code, 204)
     
     def test_in_order(self):
         self.create_link()
         self.update_link()
+        self.delete_link()
