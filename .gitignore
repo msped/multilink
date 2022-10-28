@@ -3,3 +3,4 @@ env/
 .env
 htmlcov/
 .coverage
+media/
