@@ -167,6 +167,35 @@ class TestViews(APITestCase):
             }
         )
 
+    def get_networks(self):
+        access_request = self.client.post(
+            '/api/auth/jwt/create/',
+            {
+                'username': 'admin',
+                'password': 'TestP455word!1'
+            },
+            format='json'
+        )
+        access_token = access_request.data['access']
+        response = self.client.get(
+            '/api/links/networks',
+            **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            [
+                {
+                    "logo": "http://testserver/media/logos/insta.png",
+                    "name": "Instagram"
+                },
+                {
+                    "logo": "http://testserver/media/logos/twit.png",
+                    "name": "Twitter"
+                }
+            ]
+        )
+
     def delete_link(self):
         access_request = self.client.post(
             '/api/auth/jwt/create/',
@@ -187,4 +216,5 @@ class TestViews(APITestCase):
     def test_in_order(self):
         self.create_link()
         self.update_link()
+        self.get_networks()
         self.delete_link()
