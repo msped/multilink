@@ -112,6 +112,7 @@ class TestViews(APITestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                "user": 2,
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
