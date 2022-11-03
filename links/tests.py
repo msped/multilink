@@ -5,7 +5,6 @@ import tempfile
 from django.contrib.auth.hashers import make_password
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
-from PIL import Image
 from rest_framework.test import APITestCase
 from accounts.models import Profile
 
@@ -110,16 +109,11 @@ class TestViews(APITestCase):
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 201)
+        profile = Profile.objects.get(username="admin")
         self.assertEqual(
             json.loads(response.content),
             {
-                "user": {
-                    "first_name": "Harold",
-                    "last_name": "Finch",
-                    "username": "admin",
-                    "profile_picture": None,
-                    "bio": None
-                },
+                "user": profile.id,
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
@@ -141,7 +135,7 @@ class TestViews(APITestCase):
         access_token = access_request.data['access']
         link = Links.objects.get(network__name='Twitter')
         response = self.client.patch(
-            f'/api/links/{link.id}',
+            f'/api/links/{link.id}/',
             {
                 'link': 'https://twitter.com/HWCCLiverpool'
             },
@@ -151,13 +145,6 @@ class TestViews(APITestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "user": {
-                    "first_name": "Harold",
-                    "last_name": "Finch",
-                    "username": "admin",
-                    "profile_picture": None,
-                    "bio": None
-                },
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
@@ -178,7 +165,7 @@ class TestViews(APITestCase):
         )
         access_token = access_request.data['access']
         response = self.client.get(
-            '/api/links/networks',
+            '/api/links/networks/',
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 200)
@@ -196,6 +183,38 @@ class TestViews(APITestCase):
             ]
         )
 
+    def get_profile_exists(self):
+        response = self.client.get(
+            '/api/links/admin/'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "username": "admin",
+                "first_name": "Harold",
+                "last_name": "Finch",
+                "bio": None,
+                "profile_picture": None,
+                "links": [
+                    {
+                        "network": {
+                            "logo": "/media/logos/twit.png",
+                            "name": "Twitter"
+                        },
+                        "link": "https://twitter.com/HWCCLiverpool",
+                        "nsfw": False
+                    }
+                ]
+            }
+        )
+
+    def get_profile_404(self):
+        response = self.client.get(
+            '/api/links/testuser/'
+        )
+        self.assertEqual(response.status_code, 404)
+
     def delete_link(self):
         access_request = self.client.post(
             '/api/auth/jwt/create/',
@@ -208,7 +227,7 @@ class TestViews(APITestCase):
         access_token = access_request.data['access']
         link = Links.objects.get(network__name='Twitter')
         response = self.client.delete(
-            f'/api/links/{link.id}',
+            f'/api/links/{link.id}/',
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 204)
@@ -217,4 +236,6 @@ class TestViews(APITestCase):
         self.create_link()
         self.update_link()
         self.get_networks()
+        self.get_profile_exists()
+        self.get_profile_404()
         self.delete_link()
