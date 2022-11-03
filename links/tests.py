@@ -109,10 +109,11 @@ class TestViews(APITestCase):
             **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
         )
         self.assertEqual(response.status_code, 201)
+        profile = Profile.objects.get(username="admin")
         self.assertEqual(
             json.loads(response.content),
             {
-                "user": 2,
+                "user": profile.id,
                 "network": {
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
@@ -182,6 +183,38 @@ class TestViews(APITestCase):
             ]
         )
 
+    def get_profile_exists(self):
+        response = self.client.get(
+            '/api/links/admin/'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "username": "admin",
+                "first_name": "Harold",
+                "last_name": "Finch",
+                "bio": None,
+                "profile_picture": None,
+                "links": [
+                    {
+                        "network": {
+                            "logo": "/media/logos/twit.png",
+                            "name": "Twitter"
+                        },
+                        "link": "https://twitter.com/HWCCLiverpool",
+                        "nsfw": False
+                    }
+                ]
+            }
+        )
+
+    def get_profile_404(self):
+        response = self.client.get(
+            '/api/links/testuser/'
+        )
+        self.assertEqual(response.status_code, 404)
+
     def delete_link(self):
         access_request = self.client.post(
             '/api/auth/jwt/create/',
@@ -203,4 +236,6 @@ class TestViews(APITestCase):
         self.create_link()
         self.update_link()
         self.get_networks()
+        self.get_profile_exists()
+        self.get_profile_404()
         self.delete_link()
