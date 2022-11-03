@@ -59,6 +59,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
     def get_links(self, obj):
-        links = Links.objects.filter(id=obj.id)
+        links = Links.objects.filter(user=obj.id)
         serializer = LinkSerializer(links, many=True)
         return serializer.data
