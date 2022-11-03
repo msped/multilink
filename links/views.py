@@ -1,16 +1,18 @@
 from accounts.models import Profile
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, UpdateAPIView)
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Links, Networks
-from .serailizers import LinkSerializer, NetworkSerializer
+from .serailizers import (FullLinkSerializer, LinkSerializer,
+                          NetworkSerializer, ProfileSerializer)
 
 
 class CreateLink(CreateAPIView):
     permission_classes = [IsAuthenticated,]
-    serializer_class = LinkSerializer
+    serializer_class = FullLinkSerializer
     queryset = Links.objects.all()
 
     def perform_create(self, serializer):
@@ -26,3 +28,9 @@ class GetNetworks(ListAPIView):
     permission_classes = [IsAuthenticated,]
     serializer_class = NetworkSerializer
     queryset = Networks.objects.all()
+
+class ProfileView(RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    lookup_url_kwarg = 'username'
+    lookup_field = 'username'
+    queryset = Profile.objects.all()
