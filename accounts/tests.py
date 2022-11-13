@@ -85,7 +85,7 @@ class AuthTests(APITestCase):
 
     def request_access_token(self):
         response = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -95,7 +95,7 @@ class AuthTests(APITestCase):
 
     def request_refresh_token(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -116,7 +116,7 @@ class AuthTests(APITestCase):
 
     def blacklist_token(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -136,7 +136,7 @@ class AuthTests(APITestCase):
 
     def change_password_check_new_and_old(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -157,7 +157,7 @@ class AuthTests(APITestCase):
 
     def change_password_wrong_old_password(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -178,7 +178,7 @@ class AuthTests(APITestCase):
 
     def change_password_new_not_matching(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
@@ -199,7 +199,7 @@ class AuthTests(APITestCase):
 
     def change_password_valid(self):
         access_request = self.client.post(
-            '/api/auth/jwt/create/',
+            '/api/auth/jwt/token/',
             {
                 'username': 'admin',
                 'password': '5up3R!97'
