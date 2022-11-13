@@ -19,7 +19,7 @@ Multi Link is a Link Tree clone in React and Django Rest Framework. This reposit
 
 #### Obtain Token (Login)
 
-```/api/auth/jwt/create/ POST```
+```/api/auth/jwt/token/ POST```
 
 ```
 {
@@ -27,6 +27,8 @@ Multi Link is a Link Tree clone in React and Django Rest Framework. This reposit
     'password': string
 }
 ```
+
+Returns `access`, `refresh`, and `username`.
 
 #### Refresh Token
 
