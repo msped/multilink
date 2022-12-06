@@ -7,6 +7,7 @@ class NetworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Networks
         fields = [
+            'id',
             'logo',
             'name'
         ]
@@ -46,10 +47,12 @@ class LinkSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     links = serializers.SerializerMethodField()
+    profile_picture = serializers.ImageField()
     
     class Meta:
         model = Profile
         fields = [
+            'id',
             'username',
             'first_name',
             'last_name',
