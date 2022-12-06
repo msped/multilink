@@ -35,6 +35,7 @@ class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Links
         fields = [
+            'id',
             'network',
             'link',
             'nsfw'
