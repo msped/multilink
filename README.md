@@ -107,6 +107,7 @@ Takes the refresh token as the request data.
 
 ```
 {
+    'id': int,
     'network': int(id),
     'link': string,
     'nsfw': boolean
