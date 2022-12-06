@@ -147,7 +147,8 @@ class TestViews(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content),
-            {
+            {   
+                'id': 2,
                 "network": {
                     "id": link.network.id,
                     "logo": "/media/logos/twit.png",
@@ -205,6 +206,7 @@ class TestViews(APITestCase):
                 "profile_picture": None,
                 "links": [
                     {
+                        "id": 2,
                         "network": {
                             'id': 2,
                             "logo": "/media/logos/twit.png",
