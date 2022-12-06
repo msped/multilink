@@ -76,10 +76,12 @@ class TestViews(APITestCase):
             password=make_password('TestP455word!2')
         ).save()
         Networks.objects.create(
+            id=1,
             logo=SimpleUploadedFile('insta.png', b'insta'),
             name="Instagram"
         ).save()
         Networks.objects.create(
+            id=2,
             logo=SimpleUploadedFile('twit.png', b'twit'),
             name="Twitter"
         ).save()
@@ -115,6 +117,7 @@ class TestViews(APITestCase):
             {
                 "user": profile.id,
                 "network": {
+                    'id': network.id,
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
                 },
@@ -146,6 +149,7 @@ class TestViews(APITestCase):
             json.loads(response.content),
             {
                 "network": {
+                    "id": link.network.id,
                     "logo": "/media/logos/twit.png",
                     "name": "Twitter"
                 },
@@ -173,10 +177,12 @@ class TestViews(APITestCase):
             json.loads(response.content),
             [
                 {
+                    'id': 1,
                     "logo": "http://testserver/media/logos/insta.png",
                     "name": "Instagram"
                 },
                 {
+                    'id': 2,
                     "logo": "http://testserver/media/logos/twit.png",
                     "name": "Twitter"
                 }
@@ -191,6 +197,7 @@ class TestViews(APITestCase):
         self.assertEqual(
             json.loads(response.content),
             {
+                'id': 5,
                 "username": "admin",
                 "first_name": "Harold",
                 "last_name": "Finch",
@@ -199,6 +206,7 @@ class TestViews(APITestCase):
                 "links": [
                     {
                         "network": {
+                            'id': 2,
                             "logo": "/media/logos/twit.png",
                             "name": "Twitter"
                         },
