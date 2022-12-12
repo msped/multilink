@@ -126,6 +126,36 @@ class TestViews(APITestCase):
             }
         )
 
+    def get_link(self):
+        access_request = self.client.post(
+            '/api/auth/jwt/create/',
+            {
+                'username': 'admin',
+                'password': 'TestP455word!1'
+            },
+            format='json'
+        )
+        access_token = access_request.data['access']
+        link = Links.objects.get(network__name='Twitter')
+        response = self.client.get(
+            f'/api/links/{link.id}/',
+            **{'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content),
+            {   
+                "id": link.id,
+                "network": {
+                    'id': link.network.id,
+                    "logo": "/media/logos/twit.png",
+                    "name": "Twitter"
+                },
+                "link": "https://twitter.com/",
+                "nsfw": False
+            }
+        )
+
     def update_link(self):
         access_request = self.client.post(
             '/api/auth/jwt/create/',
@@ -195,10 +225,11 @@ class TestViews(APITestCase):
             '/api/links/admin/'
         )
         self.assertEqual(response.status_code, 200)
+        admin = Profile.objects.get(username="admin")
         self.assertEqual(
             json.loads(response.content),
             {
-                'id': 5,
+                'id': admin.id,
                 "username": "admin",
                 "first_name": "Harold",
                 "last_name": "Finch",
@@ -244,6 +275,7 @@ class TestViews(APITestCase):
     
     def test_in_order(self):
         self.create_link()
+        self.get_link()
         self.update_link()
         self.get_networks()
         self.get_profile_exists()
